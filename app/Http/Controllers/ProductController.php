@@ -13,6 +13,59 @@ class ProductController extends Controller
 {
     //
 
+    public function index(Request $request)
+    {
+
+
+        if ($request->q == null && $request->category == null) {
+            $products = Product::with(['images', 'category'])->paginate(5);
+            return response()->json($products);
+        } elseif ($request->q || $request->category) {
+            if ($request->q && $request->category) {
+                $category = Category::where('name', $request->category)->get();
+                if ($category->first()) {
+                    $products = Product::with(['images', 'category'])
+                        ->where('category_id', $category->first()->id)
+                        ->where('name', 'LIKE', '%' . $request->q . '%')
+                        ->get();
+                    return response()->json($products);
+                }
+                return response()->json([
+                   'message'=>"Category specified not found"
+                ]);
+            }
+            if ($request->q) {
+                $products = Product::with(['images', 'category'])
+                    ->where('name', 'LIKE', '%' . $request->q . '%')->get();
+                return response()->json($products);
+            } else if ($request->category) {
+
+                $category = Category::where('name', $request->category)->get();
+                if($category->first()) {
+                    $products = Product::with(['images', 'category'])
+                        ->where('category_id', $category->first()->id)->get();
+                    return response()->json($products);
+                }
+                return response()->json([
+                    'message'=>"Category specified not found"
+                ]);
+            }
+        }
+
+    }
+
+    public function fetchCategories()
+    {
+        $categories = Category::all();
+        return $categories;
+    }
+
+    public function show($id)
+    {
+        $product = Product::find($id);
+        return response()->json($product);;
+    }
+
     public function store(Request $request)
     {
 
@@ -22,14 +75,15 @@ class ProductController extends Controller
             'category' => 'required',
             'description' => 'required',
             'price' => 'required|numeric',
+            'photo' => 'mimes:jpeg,bmp,png,jpg,svg,gif' //jpeg, png, bmp, gif, or svg
 
         ]);
 
-        /*save category*/
-        $category = new Category();
-        $category->name = $request->category;
-        $category->save();
-
+        /*save category must be unique
+            $category = new Category();
+            $category->name = $request->category;
+            $category->save();
+         */
         /*save product*/
         $res = Product::create([
             'name' => $product['name'],
@@ -46,10 +100,10 @@ class ProductController extends Controller
             foreach ($images as $image) {
 
 
-                $path =$image->store('public/photos');
+                $path = $image->store('public/photos');
 
                 $newImage = new Image();
-                $newImage->img_path = Storage::url($path) ;
+                $newImage->img_path = Storage::url($path);
                 $newImage->product_id = $res->id;
                 $newImage->save();
             }
@@ -59,6 +113,8 @@ class ProductController extends Controller
 
         /*$url = Storage::url('design2.jpeg');*/
 
-        return $res->with(['images'])->get();
+        return response()->json([
+            'message' => 'product added successfully'
+        ]);
     }
 }

@@ -19,4 +19,8 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::post('/product','ProductController@store')->name('upload_product');
+Route::post('/products','ProductController@store')->name('upload_product');
+Route::get('/products','ProductController@index');
+Route::get('/products/{product}','ProductController@show');
+
+Route::get('/categories','ProductController@fetchCategories');
