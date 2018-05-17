@@ -31,7 +31,7 @@ class ProductController extends Controller
                     return response()->json($products);
                 }
                 return response()->json([
-                   'message'=>"Category specified not found"
+                    'message' => "Category specified not found"
                 ]);
             }
             if ($request->q) {
@@ -41,13 +41,13 @@ class ProductController extends Controller
             } else if ($request->category) {
 
                 $category = Category::where('name', $request->category)->get();
-                if($category->first()) {
+                if ($category->first()) {
                     $products = Product::with(['images', 'category'])
                         ->where('category_id', $category->first()->id)->get();
                     return response()->json($products);
                 }
                 return response()->json([
-                    'message'=>"Category specified not found"
+                    'message' => "Category specified not found"
                 ]);
             }
         }
@@ -63,7 +63,7 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::find($id);
-        return response()->json($product);;
+        return response()->json($product);
     }
 
     public function store(Request $request)
@@ -79,15 +79,16 @@ class ProductController extends Controller
 
         ]);
 
-        /*save category must be unique
-            $category = new Category();
-            $category->name = $request->category;
-            $category->save();
-         */
+        //save category must be unique
+        $category = Category::where('name', $request->category)->get();
+        if ($category->first()== null){
+            return response()->json(['error'=>'category does not exist']);
+        }
+
         /*save product*/
         $res = Product::create([
             'name' => $product['name'],
-            'category_id' => $category->id,
+            'category_id' => $category->first()->id,
             'description' => $product['description'],
             'price' => $product['price'],
             'user_id' => Auth::id()
