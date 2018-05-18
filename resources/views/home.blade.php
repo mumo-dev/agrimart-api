@@ -21,7 +21,7 @@
                                 <label for="product_name" class="col-md-3 col-form-label">Product Name:</label>
                                 <div class="col-md-7">
                                     <input type="text" class="form-control {{ $errors->has("name")? ' invalid':'' }}"
-                                           id="name" name="name">
+                                           id="name" name="name" value="{{ old('name') }}">
                                     @if($errors->has('name'))
                                         <span class="invalid-feedback">
                                          {{ $errors->first('name') }}
@@ -34,12 +34,17 @@
                             <div class="form-group row">
                                 <label for="category" class="col-md-3 col-form-label">Category</label>
                                 <div class="col-md-7">
-                                    <input type="text" class="form-control {{ $errors->has("category")?' invalid':'' }}"
+                                  {{--  <input type="text" class="form-control {{ $errors->has("category")?' invalid':'' }}"
                                            id="category" name="category">
 
                                     @if($errors->has('category'))
                                         <span class="invalid-feedback"> {{ $errors->first('category') }}</span>
-                                    @endif
+                                    @endif--}}
+                                    <select class="form-control" name="category" id="category">
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->name }}">{{ $category->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
 
@@ -49,7 +54,7 @@
                                 </label>
                                 <div class="col-md-7">
                                     <textarea class="form-control {{ $errors->has('description')? ' invalid':'' }}"
-                                              id="description" name="description"></textarea>
+                                              id="description" name="description" value="{{ old('description') }}"></textarea>
 
                                     @if($errors->has('description'))
                                         <span class="invalid-feedback"> {{ $errors->first('description') }}</span>
@@ -61,7 +66,7 @@
                                 <label for="price" class="col-md-3 col-form-label">Price</label>
                                 <div class="col-md-7">
                                     <input type="text" class="form-control {{ $errors->has("price")?' invalid':'' }}"
-                                           id="price" name="price">
+                                           id="price" name="price" value="{{ old("price") }}">
 
                                     @if($errors->has('price'))
                                         <span class="invalid-feedback"> {{ $errors->first('price') }}</span>
@@ -72,7 +77,7 @@
                                 <label for="photo" class="col-md-3 col-form-label"> Images</label>
                                 <div class="col-md-7">
                                     <input type="file" class="form-control {{ $errors->has("photo")?' invalid':'' }}"
-                                           id="photo" name="photo[]" multiple>
+                                           id="photo" name="photo[]" multiple value="{{ old("photo[]") }}">
 
                                     @if($errors->has('photo'))
                                         <span class="invalid-feedback"> {{ $errors->first('photo') }}</span>

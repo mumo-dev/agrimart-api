@@ -75,7 +75,7 @@ class ProductController extends Controller
             'category' => 'required',
             'description' => 'required',
             'price' => 'required|numeric',
-            'photo' => 'mimes:jpeg,bmp,png,jpg,svg,gif' //jpeg, png, bmp, gif, or svg
+            'photo[]' => 'mimes:jpeg,bmp,png,jpg,svg,gif' //jpeg, png, bmp, gif, or svg
 
         ]);
 
@@ -104,7 +104,7 @@ class ProductController extends Controller
                 $path = $image->store('public/photos');
 
                 $newImage = new Image();
-                $newImage->img_path = Storage::url($path);
+                $newImage->img_path = $path;
                 $newImage->product_id = $res->id;
                 $newImage->save();
             }
