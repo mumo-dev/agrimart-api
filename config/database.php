@@ -1,11 +1,11 @@
 <?php
 
 $dbopts = parse_url(getenv('DATABASE_URL'));
-$username=$dbopts["user"]??null;
-$password = $dbopts["pass"]??null;
-$host = $dbopts["host"]??null;
-$port = $dbopts["port"]??null;
-$database = substr($dbopts["path"],1)??null;
+$username = $dbopts["user"] ?? null;
+$password = $dbopts["pass"] ?? null;
+$host = $dbopts["host"] ?? null;
+//$port = $dbopts["port"]??null;
+$database = substr($dbopts["path"], 1) ?? null;
 
 return [
 
@@ -75,8 +75,8 @@ return [
         ],
         'pgsql_production' => [
             'driver' => 'pgsql',
-            'host' =>$host,
-            'port' =>$port,
+            'host' => $host,
+            'port' => env('DB_PORT', '5432'),
             'database' => $database,
             'username' => $username,
             'password' => $password,
