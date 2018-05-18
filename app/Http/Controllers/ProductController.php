@@ -18,7 +18,7 @@ class ProductController extends Controller
 
 
         if ($request->q == null && $request->category == null) {
-            $products = Product::with(['images', 'category'])->paginate(5);
+            $products = Product::with(['images', 'category'])->paginate(20);
             return response()->json($products);
         } elseif ($request->q || $request->category) {
             if ($request->q && $request->category) {
@@ -27,7 +27,7 @@ class ProductController extends Controller
                     $products = Product::with(['images', 'category'])
                         ->where('category_id', $category->first()->id)
                         ->where('name', 'LIKE', '%' . $request->q . '%')
-                        ->get();
+                        ->paginate(20);
                     return response()->json($products);
                 }
                 return response()->json([
@@ -36,14 +36,14 @@ class ProductController extends Controller
             }
             if ($request->q) {
                 $products = Product::with(['images', 'category'])
-                    ->where('name', 'LIKE', '%' . $request->q . '%')->get();
+                    ->where('name', 'LIKE', '%' . $request->q . '%')->paginate(20);
                 return response()->json($products);
             } else if ($request->category) {
 
                 $category = Category::where('name', $request->category)->get();
                 if ($category->first()) {
                     $products = Product::with(['images', 'category'])
-                        ->where('category_id', $category->first()->id)->get();
+                        ->where('category_id', $category->first()->id)->paginate(20);
                     return response()->json($products);
                 }
                 return response()->json([
