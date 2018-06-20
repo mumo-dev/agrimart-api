@@ -27,4 +27,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::middleware('auth:api')->group(function () {
     Route::post('logout', 'Api\Auth\LoginController@logout');
     Route::post('/products','ProductController@store');
+    Route::post('/place_order','PurchaseController@placeOrder');
 });
